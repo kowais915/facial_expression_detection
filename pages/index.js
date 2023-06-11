@@ -5,6 +5,7 @@ import styles from '@/styles/Home.module.css'
 import {useRef } from 'react';
 import { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
+import Form from '@/components/Forms';
 
 
 
@@ -47,16 +48,15 @@ export default function Home() {
 
 
   return (
+
+    <div className={styles.parentContainer}>
+
+      <Form />
     <div className={styles.container}>
 
-      <div className="form">
-      <form>
-        <label>
-          <span className="label">Enter Image URL</span>
-          <input type="text" />
-        </label>
-      </form>
-      </div>
+      
+
+
       <Image
         src="/image4.webp"
         alt="Picture of the author"
@@ -68,6 +68,8 @@ export default function Home() {
     
       
       <canvas ref={canvasRef} width="900" height="600" className={styles.canvas}></canvas>
+    </div>
+
     </div>
   )
 }
