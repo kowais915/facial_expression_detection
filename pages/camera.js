@@ -8,6 +8,8 @@ import Form from "@/components/Forms";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { addUrl } from "@/formRed";
+import Link  from 'next/link';
+
 
 const CameraPage = () => {
     const canvasRef = useRef();
@@ -53,6 +55,7 @@ const CameraPage = () => {
     const detectExpressions = ()=>{
         setInterval(async () => {
             const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+            
             canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current);
             faceapi.matchDimensions(canvasRef.current, {
                 width: "900",
@@ -69,7 +72,9 @@ const CameraPage = () => {
     return ( 
 
         <div className={styles.parentContainer}>
-        <Form/>
+        
+        <Link href="/">Detect Expressions in an Image Instead - Click Me</Link>
+
         <div className={styles.container}>
 
 

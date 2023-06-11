@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { addUrl } from "@/formRed";
 import {useState } from 'react';
-
+import Link  from 'next/link';
 
 
 
@@ -60,6 +60,10 @@ export default function Home() {
   return (
 
     <div className={styles.parentContainer}>
+
+      
+            <Link href="/camera">Real-Time Expression Detection</Link>
+        
 
       <Form />
     <div className={styles.container}>
