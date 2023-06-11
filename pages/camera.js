@@ -12,7 +12,7 @@ import { addUrl } from "@/formRed";
 const CameraPage = () => {
     const canvasRef = useRef();
     const videoRef = useRef(null);
-    const {url } = useSelector(state => state.url);
+    const {url } = useSelector(state => state.form);
     const dispatch = useDispatch();
 
     useEffect(()=>{
