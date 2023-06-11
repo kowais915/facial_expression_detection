@@ -1,0 +1,8 @@
+.canvas{
+
+  position: absolute;
+}
+
+.container{
+   display: flex;
+}
