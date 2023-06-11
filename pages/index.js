@@ -37,6 +37,7 @@ export default function Home() {
       ])
       .then(()=>{
         console.log(webcam())
+
       })
       .catch(err=>console.log(err))
     }
@@ -47,6 +48,15 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
+
+      <div className="form">
+      <form>
+        <label>
+          <span className="label">Enter Image URL</span>
+          <input type="text" />
+        </label>
+      </form>
+      </div>
       <Image
         src="/image4.webp"
         alt="Picture of the author"

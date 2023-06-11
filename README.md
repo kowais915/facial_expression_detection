@@ -1,8 +1,15 @@
+## Facial Expression Detection
+
+This project used [Face API](https://github.com/justadudewhohacks/face-api.js/) to detect facial expressions.
+
+The project is written in Next.JS.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
-
-First, run the development server:
+1. Clone the project.
+   
+2. Run the development server:
 
 ```bash
 npm run dev
