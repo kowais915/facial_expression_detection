@@ -80,9 +80,7 @@ export default function Home() {
 
    
     
-    <div>
-      <p>{url}</p>
-    </div>
+    
       
       <canvas ref={canvasRef} width="900" height="600" className={styles.canvas}></canvas>
     </div>
