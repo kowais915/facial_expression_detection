@@ -7,47 +7,64 @@ import * as faceapi from 'face-api.js';
 
 const CameraPage = () => {
     const canvasRef = useRef();
-    const imageRef = useRef();
-    const camera = useRef(null);
-    const [image, setImage] = useState(null);
+    const videoRef = useRef(null);
+
+    useEffect(()=>{
+        webcam();
+        videoRef && loadingModels();
+    }, [])
+   
 
 
     const webcam = async ()=>{
-        const detect = await faceapi.detectAllFaces(imageRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-        console.log(detect)
-        faceapi.matchDimensions(canvasRef.current, {
-          width: "900",
-          height: "600"
-        });
-        canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(imageRef.current);
-        faceapi.draw.drawDetections(canvasRef.current, detect);
+        navigator.mediaDevices.getUserMedia({video: true})
+        .then((currentStream)=>{
+
+            videoRef.current.srcObject = currentStream;
+
+        })
+        .catch(err=>console.log(err))
       }
 
-      useEffect(()=>{
-        const loadingModels =()=>{
-          Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-            faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-            faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-            faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-          ])
-          .then(()=>{
-            console.log(webcam())
-          })
-          .catch(err=>console.log(err))
-        }
     
-        imageRef.current && loadingModels();
-      },[])
+    
+    //   loading models
+
+    const loadingModels =()=>{
+        Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+          faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+          faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+          faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+          faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+        ]).then(()=>{
+            detectExpressions()
+        })
+
+    }
+
+   
+    const detectExpressions = ()=>{
+        setInterval(async () => {
+            const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+            canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current);
+            faceapi.matchDimensions(canvasRef.current, {
+                width: "900",
+                height: "600"
+              });
+
+              const scaled = faceapi.resizeResults(detections, {width: "900", height: "600"});
+              faceapi.draw.drawFaceExpressions(canvasRef.current, scaled);
+              faceapi.draw.drawDetections(canvasRef.current, scaled);
+        }, 1000);
+    }
+       
 
     return ( 
-        <div style={{width: "400px"}}>
+        <div className={styles.container}>
 
 
-            <Camera ref={imageRef}/>
-            <button onClick={() => setImage(camera.current.takePhoto())}>Take photo</button>
-            <img src={image} alt='Taken photo'/>
-
+            <video ref={videoRef} crossOrigin="anonymous" width="700" height="600" autoPlay />
       
             <canvas ref={canvasRef} width="700" height="600" className={styles.canvas}></canvas>
       </div>
