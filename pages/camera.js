@@ -5,10 +5,15 @@ import styles from '@/styles/Camera.module.css';
 import { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 import Form from "@/components/Forms";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addUrl } from "@/formRed";
 
 const CameraPage = () => {
     const canvasRef = useRef();
     const videoRef = useRef(null);
+    const {url } = useSelector(state => state.url);
+    const dispatch = useDispatch();
 
     useEffect(()=>{
         webcam();

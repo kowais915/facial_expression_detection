@@ -6,6 +6,10 @@ import {useRef } from 'react';
 import { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 import Form from '@/components/Forms';
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addUrl } from "@/formRed";
+import {useState } from 'react';
 
 
 
@@ -13,6 +17,11 @@ import Form from '@/components/Forms';
 export default function Home() {
   const canvasRef = useRef();
   const imageRef = useRef();
+  const {url } = useSelector(state => state.form);
+  const dispatch = useDispatch();
+  const [formUrl, setFormUrl ] = useState('');
+
+  console.log(url)
 
   const webcam = async ()=>{
     const detect = await faceapi.detectAllFaces(imageRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
@@ -58,14 +67,21 @@ export default function Home() {
 
 
       <Image
-        src="/image4.webp"
+        // src="/image4.webp"
+        src={url}
         alt="Picture of the author"
         width={900}
         height={600}
         ref={imageRef}
+        priority
 
       ></Image>
+
+   
     
+    <div>
+      <p>{url}</p>
+    </div>
       
       <canvas ref={canvasRef} width="900" height="600" className={styles.canvas}></canvas>
     </div>
