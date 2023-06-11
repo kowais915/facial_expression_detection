@@ -53,7 +53,8 @@ export default function Home() {
     }
 
     imageRef.current && loadingModels();
-  },[])
+  },[url])
+
 
 
   return (

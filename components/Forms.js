@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {addUrl } from '../formRed';
+import {useRouter } from 'next/router';
 
 
 
 const Form = () => {
+    const router = useRouter();
     const {url } = useSelector(state => state.form);
     const dispatch = useDispatch();
     const [formUrl, setFormUrl ] = useState('');
