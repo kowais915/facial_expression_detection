@@ -4,6 +4,10 @@ This project used [Face API](https://github.com/justadudewhohacks/face-api.js/) 
 
 The project is written in Next.JS.
 
+## Real Time Facial Expression Detection
+
+Access this link: https://facial-expression-detection-tzfj.vercel.app/camera
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
