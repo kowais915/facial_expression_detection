@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import Image from 'next/image';
-import {Camera} from "react-camera-pro";
+
 import styles from '@/styles/Camera.module.css';
 import { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
