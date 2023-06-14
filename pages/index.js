@@ -1,94 +1,94 @@
+import React, { useState, useRef } from "react";
+import Image from 'next/image';
 
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-import {useRef } from 'react';
+import styles from '@/styles/Camera.module.css';
 import { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
-import Form from '@/components/Forms';
+import Form from "@/components/Forms";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { addUrl } from "@/formRed";
-import {useState } from 'react';
 import Link  from 'next/link';
 
 
+const CameraPage = () => {
+    const canvasRef = useRef();
+    const videoRef = useRef(null);
+    const {url } = useSelector(state => state.form);
+    const dispatch = useDispatch();
 
-export default function Home() {
-  const canvasRef = useRef();
-  const imageRef = useRef();
-  const {url } = useSelector(state => state.form);
-  const dispatch = useDispatch();
-  const [formUrl, setFormUrl ] = useState('');
+    useEffect(()=>{
+        webcam();
+        videoRef && loadingModels();
+    }, [])
+   
 
-  console.log(url)
 
-  const webcam = async ()=>{
-    const detect = await faceapi.detectAllFaces(imageRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-    console.log(detect)
-    faceapi.matchDimensions(canvasRef.current, {
-      width: "900",
-      height: "600"
-    });
+    const webcam = async ()=>{
+        navigator.mediaDevices.getUserMedia({video: true})
+        .then((currentStream)=>{
 
-    const scaled = faceapi.resizeResults(detect, {width: "900", height: "600"});
-    canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(imageRef.current);
-    faceapi.draw.drawFaceExpressions(canvasRef.current, scaled);
-    faceapi.draw.drawDetections(canvasRef.current, scaled);
-  }
+            videoRef.current.srcObject = currentStream;
 
-  useEffect(()=>{
+        })
+        .catch(err=>console.log(err))
+      }
+
+    
+    
+    //   loading models
+
     const loadingModels =()=>{
-      Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-      ])
-      .then(()=>{
-        console.log(webcam())
+        Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+          faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+          faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+          faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+          faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+        ]).then(()=>{
+            detectExpressions()
+        })
 
-      })
-      .catch(err=>console.log(err))
     }
 
-    imageRef.current && loadingModels();
-  },[url])
-
-
-
-  return (
-
-    <div className={styles.parentContainer}>
-
-      
-            <Link href="/camera">Real-Time Expression Detection</Link>
-        
-
-      <Form />
-    <div className={styles.container}>
-
-      
-
-
-      <Image
-        // src="/image4.webp"
-        src={url}
-        alt="Picture of the author"
-        width={900}
-        height={600}
-        ref={imageRef}
-        priority
-
-      ></Image>
-
    
-    
-    
-      
-      <canvas ref={canvasRef} width="900" height="600" className={styles.canvas}></canvas>
-    </div>
+    const detectExpressions = ()=>{
+        setInterval(async () => {
+            const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+            
+            canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current);
+            faceapi.matchDimensions(canvasRef.current, {
+                width: "900",
+                height: "600"
+              });
 
-    </div>
-  )
+              const scaled = faceapi.resizeResults(detections, {width: "900", height: "600"});
+              faceapi.draw.drawFaceExpressions(canvasRef.current, scaled);
+              faceapi.draw.drawDetections(canvasRef.current, scaled);
+        }, 1000);
+    }
+
+    
+       
+
+    return ( 
+
+        <div className={styles.parentContainer}>
+        
+        <Link href="/">Detect Expressions in an Image Instead - Click Me</Link>
+
+        <div className={styles.container}>
+
+
+            <video ref={videoRef} crossOrigin="anonymous" width="700" height="600" autoPlay />
+      
+            <canvas ref={canvasRef} width="700" height="600" className={styles.canvas}></canvas>
+      </div>
+        
+        
+        
+        </div>
+     );
 }
+ 
+export default CameraPage;
